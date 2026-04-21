@@ -20,9 +20,9 @@ def user_payload():
 
 @pytest.fixture(scope="function")
 def create_user(base_url, user_payload):
-    response = requests.post(f"{base_url}/users", json=user_payload)
+        response = create_user(base_url, user_payload)
 
-    assert response.status_code == 201
+    assert response.status_code == 201, "Пользователь не был создан"
     user_data = response.json()
 
     yield user_data
