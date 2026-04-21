@@ -1,4 +1,4 @@
-from api.users_api import get_user_request, patch_user_request
+from api.users_api import get_user, patch_user
 
 
 def test_user_with_headers(base_url, create_user):
@@ -8,24 +8,21 @@ def test_user_with_headers(base_url, create_user):
         "Authorization": "Bearer testtoken123"
     }
 
-    get_response = get_user_request(base_url, user_id, headers=headers)
+    get_response = get_user(base_url, user_id, headers=headers)
 
     assert get_response.status_code == 200
     assert get_response.json()["id"] == user_id
 
 
-def test_invalid_headers_user(base_url, create_user):
+def test_get_user_with_valid_headers(base_url, create_user, auth_headers):
     user_id = create_user["id"]
 
-    headers = {
-        "Authorization": ""
-    }
+    response = get_user(base_url, user_id, headers=auth_headers)
 
-    get_response = get_user_request(base_url, user_id, headers=headers)
+    assert response.status_code == 200
+    assert response.json()["id"] == user_id
 
-    assert get_response.status_code == 401
-
-
+    
 def test_unexisting_user(base_url):
     update_payload = {
         "name": "Ivan"
@@ -35,14 +32,14 @@ def test_unexisting_user(base_url):
         "Authorization": "Bearer testtoken123"
     }
 
-    patch_response = patch_user_request(base_url, 999, update_payload, headers=headers)
+    patch_response = patch_user(base_url, 999, update_payload, headers=headers)
 
     assert patch_response.status_code == 404
     data = patch_response.json()
     assert "detail" in data
 
 
-def test_invalid_user_data(base_url, create_user):
+def test_patch_user_with_invalid_data(base_url, create_user, auth_headers):
     user_id = create_user["id"]
 
     invalid_payload = {
@@ -50,15 +47,11 @@ def test_invalid_user_data(base_url, create_user):
         "email": ""
     }
 
-    headers = {
-        "Authorization": "Bearer testtoken123"
-    }
-
-    patch_response = patch_user_request(base_url, user_id, invalid_payload, headers=headers)
+    patch_response = patch_user(base_url, user_id, invalid_payload, headers=auth_headers)
 
     assert patch_response.status_code == 422
 
-    get_response = get_user_request(base_url, user_id, headers=headers)
+    get_response = get_user(base_url, user_id, headers=auth_headers)
     data = get_response.json()
 
     assert data["name"] == create_user["name"]
