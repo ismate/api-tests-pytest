@@ -2,6 +2,7 @@ import random
 import requests
 import pytest
 from faker import Faker
+from api.users_api import create_user, delete_user
 
 @pytest.fixture(scope="session")
 def base_url():
