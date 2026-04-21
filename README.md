@@ -24,4 +24,4 @@
 
 ## Запуск тестов
 ```bash
-pytest -v
+python -m pytest -v -s
