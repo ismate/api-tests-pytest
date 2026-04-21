@@ -4,6 +4,7 @@ import pytest
 from faker import Faker
 from api.users_api import create_user, delete_user
 
+
 @pytest.fixture(scope="session")
 def base_url():
     return "http://127.0.0.1:8000"
@@ -20,14 +21,14 @@ def user_payload():
 
 @pytest.fixture(scope="function")
 def create_user(base_url, user_payload):
-        response = create_user(base_url, user_payload)
+    response = create_user(base_url, user_payload)
+    assert response.status_code == 201
 
-    assert response.status_code == 201, "Пользователь не был создан"
-    user_data = response.json()
+    created_user = response.json()
 
-    yield user_data
+    yield created_user
 
-      delete_user(base_url, created_user["id"])
+    delete_user(base_url, created_user["id"])
 
 
 @pytest.fixture(scope="module")
