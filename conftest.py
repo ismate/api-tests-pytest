@@ -27,7 +27,7 @@ def create_user(base_url, user_payload):
 
     yield user_data
 
-    requests.delete(f"{base_url}/users/{user_data['id']}")
+      delete_user(base_url, created_user["id"])
 
 
 @pytest.fixture(scope="module")
