@@ -3,12 +3,12 @@ import requests
 import pytest
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def base_url():
     return "http://127.0.0.1:8000"
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def user_payload():
     return {
         "name": "Oleg",
@@ -16,7 +16,7 @@ def user_payload():
     }
 
 
-@pytest.fixture()
+@pytest.fixture(scope="function")
 def create_user(base_url, user_payload):
     response = requests.post(f"{base_url}/users", json=user_payload)
 
