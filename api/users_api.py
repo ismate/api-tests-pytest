@@ -1,8 +1,8 @@
 import requests
 
 
-def create_user(base_url, payload):
-    return requests.post(f"{base_url}/users", json=payload)
+def create_user(base_url, payload, headers=None):
+    return requests.post(f"{base_url}/users", json=payload, headers=headers)
 
 
 def get_user(base_url, user_id, headers=None):
