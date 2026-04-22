@@ -20,15 +20,16 @@ def user_payload():
 
 
 @pytest.fixture(scope="function")
-def create_user(base_url, user_payload):
-    response = create_user(base_url, user_payload)
+def created_user(base_url, user_payload, headers=None):
+    response = create_user(base_url, user_payload, headers=headers)
     assert response.status_code == 201
 
-    created_user = response.json()
+    data = response.json()
+    user_id = data["id"]
 
-    yield created_user
+    yield data
 
-    delete_user(base_url, created_user["id"])
+    delete_user(base_url, user_id, headers=auth_headers)
 
 
 @pytest.fixture(scope="module")
