@@ -62,3 +62,30 @@ def test_patch_user_without_token(base_url, created_user, headers):
 
     assert response.status_code == 401
     assert "detail" in response.json()
+
+
+@pytest.mark.parametrize(
+    "payload, expected_status",
+    [
+        ({"name": "", "email": ""}, 422),
+        ({"name": "Ivan", "email": "invalid_email"}, 422),
+        ({"name": "Updated Name"}, 200),
+    ],
+    ids=["empty_fields", "invalid_email", "valid_partial_update"]
+)
+def test_patch_user_with_various_payloads(base_url, created_user, auth_headers, payload, expected_status):
+    user_id = created_user["id"]
+
+    response = patch_user(base_url, user_id, payload, headers=auth_headers)
+    assert response.status_code == expected_status
+
+    get_response = get_user(base_url, user_id, headers=auth_headers)
+    assert get_response.status_code == 200
+
+    user_data = get_response.json()
+
+    if expected_status == 200:
+        assert user_data["name"] == payload["name"]
+    else:
+        assert user_data["name"] == created_user["name"]
+        assert user_data["email"] == created_user["email"]
