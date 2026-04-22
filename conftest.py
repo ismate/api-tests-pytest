@@ -20,8 +20,8 @@ def user_payload():
 
 
 @pytest.fixture(scope="function")
-def created_user(base_url, user_payload, headers=None):
-    response = create_user(base_url, user_payload, headers=headers)
+def created_user(base_url, user_payload, auth_headers):
+    response = create_user(base_url, user_payload, auth_headers)
     assert response.status_code == 201
 
     data = response.json()
@@ -34,4 +34,4 @@ def created_user(base_url, user_payload, headers=None):
 
 @pytest.fixture(scope="module")
 def auth_headers():
-    return {"Authorization": "Bearer testtoken"}
+    return {"Authorization": "Bearer testtoken123"}
