@@ -1,26 +1,40 @@
-# API тесты (pytest)
+# API Tests with Pytest + Requests
+
+Проект по автоматизации API-тестов на Python.
 
 ## Стек
+
 - Python
 - pytest
 - requests
-- FastAPI (локальный сервер)
+- pydantic
+- Faker
+- FastAPI
 
-## Что покрыто
-- GET /users
-- POST /users
-- PATCH /users
-- DELETE /users
-- 404 (несуществующий пользователь)
-- валидация (невалидные данные)
-- авторизация (Bearer token)
+## Что покрыто тестами
+
+- GET пользователя с валидной авторизацией
+- PATCH пользователя
+- Проверка 401 при отсутствии/невалидном токене
+- Проверка 404 для несуществующего пользователя
+- Проверка 422 при невалидных данных
+- Проверка, что данные не изменяются после неуспешного PATCH
+- Schema validation через pydantic
 
 ## Структура проекта
-- api/ — работа с API
-- tests/ — тесты
-- data/ — тестовые данные
-- conftest.py — фикстуры
-- main_fastapi.py — тестовый сервер
+
+```text
+api-tests-pytest/
+├── api/
+│   └── users_api.py
+├── schemas/
+│   └── user_schema.py
+├── tests/
+│   └── test_users.py
+├── conftest.py
+├── main_fastapi.py
+├── requirements.txt
+└── README.md
 
 ## Запуск тестов
 ```bash
