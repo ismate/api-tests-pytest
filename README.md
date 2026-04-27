@@ -35,7 +35,11 @@ api-tests-pytest/
 ├── main_fastapi.py
 ├── requirements.txt
 └── README.md
-
+```
 ## Запуск тестов
 ```bash
 python -m pytest -v -s
+```
+## Запуск сервера
+```bash
+python -m uvicorn main_fastapi:app --reload
