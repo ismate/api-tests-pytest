@@ -43,3 +43,20 @@ python -m pytest -v -s
 ## Запуск сервера
 ```bash
 python -m uvicorn main_fastapi:app --reload
+```
+## Подходы
+
+- **Fixtures (pytest)** — создание и удаление тестовых данных через `yield`
+- **Parametrize** — покрытие нескольких сценариев (payload, headers) в одном тесте
+- **Schema validation (pydantic)** — проверка структуры и типов данных ответа API
+
+## Проверяемые статус-коды
+- 200 OK
+- 201 Created
+- 401 Unauthorized
+- 404 Not Found
+- 422 Unprocessable Entity
+
+## QA Портфолио
+
+- [QA Portfolio](https://github.com/ismate/qa-portfolio)
