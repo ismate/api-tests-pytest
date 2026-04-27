@@ -1,6 +1,6 @@
 # API Tests with Pytest + Requests
 
-Проект по автоматизации API-тестов на Python.
+Проект автоматизации API-тестов на Python с использованием pytest, requests и pydantic.
 
 ## Стек
 
@@ -20,6 +20,7 @@
 - Проверка 422 при невалидных данных
 - Проверка, что данные не изменяются после неуспешного PATCH
 - Schema validation через pydantic
+- Проверка списка пользователей (GET /users)
 
 ## Структура проекта
 
@@ -36,13 +37,13 @@ api-tests-pytest/
 ├── requirements.txt
 └── README.md
 ```
-## Запуск тестов
-```bash
-python -m pytest -v -s
-```
 ## Запуск сервера
 ```bash
 python -m uvicorn main_fastapi:app --reload
+```
+## Запуск тестов
+```bash
+python -m pytest -v -s
 ```
 ## Подходы
 
@@ -56,6 +57,14 @@ python -m uvicorn main_fastapi:app --reload
 - 401 Unauthorized
 - 404 Not Found
 - 422 Unprocessable Entity
+- 
+## Особенности
+
+- Разделение API-слоя и тестов
+- Использование fixtures для управления тестовыми данными
+- Проверка состояния данных после API-операций
+- Schema validation (pydantic)
+- Data-driven тестирование с помощью parametrize
 
 ## QA Портфолио
 
