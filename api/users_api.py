@@ -8,6 +8,9 @@ def create_user(base_url, payload, headers=None):
 def get_user(base_url, user_id, headers=None):
     return requests.get(f"{base_url}/users/{user_id}", headers=headers)
 
+def get_users(base_url, headers=None):
+    return requests.get(f"{base_url}/users", headers=headers)
+
 
 def patch_user(base_url, user_id, payload, headers=None):
     return requests.patch(f"{base_url}/users/{user_id}", json=payload, headers=headers)
