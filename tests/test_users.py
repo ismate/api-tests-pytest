@@ -20,7 +20,10 @@ def test_patch_non_existing_user(base_url, auth_headers):
     response = patch_user(base_url, 999, update_payload, headers=auth_headers)
 
     assert response.status_code == 404
-    assert "detail" in response.json()
+
+    data = response.json()
+    error = ErrorSchema(**data)
+    assert "not found" in error.detail.lower()
 
 
 def test_patch_user_with_invalid_data(base_url, created_user, auth_headers):
@@ -42,6 +45,7 @@ def test_patch_user_with_invalid_data(base_url, created_user, auth_headers):
     assert data["name"] == created_user["name"]
     assert data["email"] == created_user["email"]
 
+from schemas.user_schema import ErrorSchema
 
 @pytest.mark.parametrize(
     "headers",
@@ -61,7 +65,12 @@ def test_patch_user_without_token(base_url, created_user, headers):
     response = patch_user(base_url, user_id, payload, headers=headers)
 
     assert response.status_code == 401
-    assert "detail" in response.json()
+    
+    data = response.json()
+    error = ErrorSchema(**data)
+    
+    assert "unauthorized" in error.detail.lower()
+
 
 
 @pytest.mark.parametrize(
@@ -89,3 +98,46 @@ def test_patch_user_with_various_payloads(base_url, created_user, auth_headers, 
     else:
         assert user_data["name"] == created_user["name"]
         assert user_data["email"] == created_user["email"]
+
+
+from schemas.user_schema import UserSchema
+from api.users_api import get_user
+
+def test_get_user_schema(base_url, created_user, auth_headers):
+    user_id = created_user["id"]
+
+    get_response = get_user(base_url, user_id, headers=auth_headers)
+    assert get_response.status_code == 200
+
+    data = get_response.json()
+    user = UserSchema(**data)
+    assert user.id == user_id
+    assert user.name == created_user["name"]
+    assert user.email == created_user["email"]
+
+
+def test_get_non_existing_user(base_url, auth_headers):
+    get_response = get_user(base_url, 999, headers=auth_headers)
+
+    assert get_response.status_code == 404
+
+    data = get_response.json()
+    error = ErrorSchema(**data)
+
+    assert "not found" in error.detail.lower()
+
+
+from api.users_api import get_users
+
+
+def test_get_users_list_schema(base_url, created_user, auth_headers):
+    response = get_users(base_url, headers=auth_headers)
+
+    assert response.status_code == 200
+
+    data = response.json()
+    assert isinstance(data, list)
+
+    users = [UserSchema(**user) for user in data]
+
+    assert any(user.id == created_user["id"] for user in users)
