@@ -27,16 +27,22 @@
 
 ```text
 api-tests-pytest/
+├── .github/
+│   └── workflows/
+│       └── python-tests.yml
 ├── api/
 │   └── users_api.py
+├── data/
+│   └── users_data.py
 ├── schemas/
 │   └── user_schema.py
 ├── tests/
 │   └── test_users.py
+├── .gitignore
 ├── conftest.py
 ├── main_fastapi.py
-├── requirements.txt
-└── README.md
+├── README.md
+└── requirements.txt
 ```
 ## Запуск сервера
 ```bash
