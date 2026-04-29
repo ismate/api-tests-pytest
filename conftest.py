@@ -4,6 +4,7 @@ import pytest
 from faker import Faker
 from api.users_api import create_user, delete_user
 import os
+from api.auth_api import register_user, login_user
 
 @pytest.fixture(scope="session")
 def base_url():
@@ -32,7 +33,19 @@ def created_user(base_url, user_payload, auth_headers):
 
     delete_user(base_url, user_id, headers=auth_headers)
 
+@pytest.fixture(scope="function")
+def auth_payload():
+    return {
+        "name": fake.first_name(),
+        "email": f"{fake.user_name()}_{fake.random_int(1000, 9999)}@gmail.com",
+        "password": "123456"
+    }
 
-@pytest.fixture(scope="module")
-def auth_headers():
-    return {"Authorization": "Bearer testtoken123"}
+@pytest.fixture(scope="function")
+def auth_headers(base_url, auth_payload):
+    register_user(base_url, auth_payload)
+    response = login_user(base_url, auth_payload)
+
+    token = response.json()["access_token"]
+
+    return {"Authorization": f"Bearer {token}"}

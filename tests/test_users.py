@@ -10,7 +10,7 @@ def test_get_user_with_valid_headers(base_url, created_user, auth_headers):
 
     assert response.status_code == 200
     assert data["id"] == user_id
-
+    
 
 def test_patch_non_existing_user(base_url, auth_headers):
     update_payload = {

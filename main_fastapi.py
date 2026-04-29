@@ -1,12 +1,15 @@
-from fastapi import FastAPI, HTTPException, Header
 from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional
+from fastapi import FastAPI, HTTPException, Header, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 app = FastAPI()
+security = HTTPBearer()
 
+registered_users = {}
+tokens = {}
 users = []
 current_id = 1
-VALID_TOKEN = "Bearer testtoken123"
 
 
 class UserCreate(BaseModel):
@@ -32,11 +35,27 @@ class UserUpdate(BaseModel):
             raise ValueError("Name cannot be empty")
         return value
 
+class RegisterRequest(BaseModel):
+    name: str
+    email: EmailStr
+    password: str
+
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
 
 def check_auth(authorization: Optional[str]):
-    if authorization != VALID_TOKEN:
+    if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
+    token = authorization.replace("Bearer ", "")
+    user = tokens.get(token)
+
+    if not user:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    return user
 
 @app.post("/users", status_code=201)
 def create_user(user: UserCreate):
@@ -102,3 +121,52 @@ def delete_user(user_id: int):
             return {"message": "User deleted"}
 
     raise HTTPException(status_code=404, detail="User not found")
+
+@app.post("/register", status_code=201)
+def register_user(payload: RegisterRequest):
+    if payload.email in registered_users:
+        raise HTTPException(status_code=409, detail="User with this email already exists")
+
+    user_id = len(registered_users) + 1
+
+    registered_users[payload.email] = {
+        "id": user_id,
+        "name": payload.name,
+        "email": payload.email,
+        "password": payload.password
+    }
+
+    return {
+        "id": user_id,
+        "name": payload.name,
+        "email": payload.email
+    }
+
+
+@app.post("/login")
+def login_user(payload: LoginRequest):
+    user = registered_users.get(payload.email)
+
+    if not user or user["password"] != payload.password:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+    token = f"token-{user['id']}"
+    tokens[token] = user
+
+    return {"access_token": token, "token_type": "bearer"}
+
+
+@app.get("/profile")
+def get_profile(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    token = credentials.credentials
+
+    user = tokens.get(token)
+
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    return {
+        "id": user["id"],
+        "name": user["name"],
+        "email": user["email"]
+    }
