@@ -3,11 +3,12 @@ import requests
 import pytest
 from faker import Faker
 from api.users_api import create_user, delete_user
-
+import os
 
 @pytest.fixture(scope="session")
 def base_url():
-    return "http://127.0.0.1:8000"
+
+    return os.getenv("BASE_URL", "http://127.0.0.1:8000")
 
 
 fake = Faker()
