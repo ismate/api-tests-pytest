@@ -1,5 +1,5 @@
 # API Tests with Pytest + Requests
-
+![CI](https://github.com/ismate/api-tests-pytest/actions/workflows/python-tests.yml/badge.svg)
 Проект автоматизации API-тестов на Python с использованием pytest, requests и pydantic.
 
 ## Стек
