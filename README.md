@@ -1,7 +1,9 @@
 # API Tests with Pytest + Requests
 Проект автоматизации API-тестов на Python с использованием pytest, requests и pydantic.
 ## CI
+
 ![CI](https://github.com/ismate/api-tests-pytest/actions/workflows/python-tests.yml/badge.svg)
+
 Проект использует GitHub Actions для автозапуска API-тестов (pytest + FastAPI) при каждом push.
 ## Стек
 
