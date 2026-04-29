@@ -13,6 +13,7 @@
 - pydantic
 - Faker
 - FastAPI
+- GitHub Actions (CI)
 
 ## Что покрыто тестами
 
