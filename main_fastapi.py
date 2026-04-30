@@ -3,6 +3,7 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException, Header, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
+
 app = FastAPI()
 security = HTTPBearer()
 

@@ -8,7 +8,8 @@ def login_user(base_url, payload):
 
 def get_profile(base_url, token=None):
     headers = None
+
     if token:
-        header = {"Authorization": f"Bearer{token}"}
+        headers = {"Authorization": f"Bearer {token}"}
 
     return requests.get(f"{base_url}/profile", headers=headers)
